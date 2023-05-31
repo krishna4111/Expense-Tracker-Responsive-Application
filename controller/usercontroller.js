@@ -36,24 +36,25 @@ exports.addUser=async (req,res,next)=>{
 exports.loginCheck=async (req,res,next)=>{
     try{
         const{email,password}=req.body;
-      const check=await  User.findAll({
-            where:{
-                email:email,
-                password:password
-            }
-        })
+      const check=await  User.findAll({ where :{ email } })
         console.log(check.length);
         if(check.length>=1){
-            res.status(201).json({ result:check });
+            if(check[0].password === password){
+                res.status(201).json({ success:true , message:'user logged in successfully' });
+            }
+            else{
+                return res.status(400).json({ success:false , message:'password is wrong'})
+            } 
         }
+//if user dosent exist 
         else{
-            res.status(500).json({error:"you filled a wrong detail"})
+           return  res.status(404).json({success:false , message:'user dosent exitst'})
         }
         
     }
     catch(err){
         console.log(err);
-        res.status(500).json({error:err})
+        res.status(500).json({message:err})
     }
     
    
