@@ -10,7 +10,7 @@ app.use(express.json());
 
 app.use(cors());
 
-app.use(router);
+app.use('/user',router);
 
 app.use(express.static(path.join(__dirname,'public')))
 
