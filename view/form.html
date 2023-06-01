@@ -7,7 +7,7 @@
 </head>
 <body>
     <div style="padding: 100px;padding-top: 50px;border: solid black;border-radius: 10px;margin-top: 20px;" class="container">
-    <form onsubmit='submitEvent(event)'>
+    <form action="/user/login" onsubmit='submitEvent(event)'>
         <div class="row mb-3">
             <label for="name" style="font-weight: bold" class="col-sm-2 col-form-label">Name</label>
             <div class="col-sm-10">
@@ -27,7 +27,7 @@
           </div>
         </div>
         <div class="col-sm-6 col-sm-push-3">
-            <button style="display: block; float: right;" type="submit" class="btn btn-primary">Sign in</button>
+            <button style="display: block; float: right;" onclick="location.href = 'login';" type="submit" class="btn btn-primary">Sign in</button>
         </div>
     </form>
     <script src="/js/form.js"></script>
