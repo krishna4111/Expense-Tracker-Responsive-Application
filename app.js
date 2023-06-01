@@ -3,6 +3,7 @@ const cors=require('cors');
 const sequelize=require('./util/database');
 const router=require('./routes/userRoute');
 const path=require('path');
+const expense=require('./routes/expenseRoute');
 
 const app=express();
 
@@ -11,6 +12,8 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/user',router);
+
+app.use('/expense',expense);
 
 app.use(express.static(path.join(__dirname,'public')))
 
