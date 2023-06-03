@@ -11,10 +11,16 @@ async function addFunction(e){
         description,
         category
     }
-    const post=await axios.post('http://localhost:4000/expense/add-expense',obj)
-    location .reload();
-    console.log(post.data);
-        //showExpences(obj);
+    const token=localStorage.getItem('token');
+    console.log(token);
+    await axios.post('http://localhost:4000/expense/add-expense',obj,{headers:{'Authorization' : token}})
+    .then(response=>{
+      console.log('very very>>', response.data)
+      showExpences(response.data.expense); 
+        location.reload();
+        
+    })
+   
 }
    catch(err){
     console.log(err);
@@ -22,16 +28,18 @@ async function addFunction(e){
    
 }
 addEventListener("DOMContentLoaded",async ()=>{
-    await axios.get('http://localhost:4000/expense/show-all')
-        .then(response=>{
-            console.log(response.data.fetched[0]);
-            for(var i=0;i<response.data.fetched.length;i++){
-                //console.log(response.data.allUsers[0])
-                showExpences(response.data.fetched[i]);
-        }})
-        .catch(err=>{
-            console.log(err);
-        }) 
+    try{
+        const token=localStorage.getItem('token');
+        await axios.get('http://localhost:4000/expense/show-all',{ headers : { "Authorization" : token }})
+            .then(response=>{
+                response.data.expenses.forEach(expenses=>{
+                    showExpences(expenses);
+                })
+                })
+    }
+   catch(error){
+            console.log(error); 
+        } 
 })
 
 function showExpences(obj){
@@ -68,10 +76,11 @@ async function editExpense(expense){
 
 async function deleteExpense(userId){
     console.log('inside delete');
-    await axios.delete(`http://localhost:4000/expense/delete-expense/${userId}`)
+    const token=localStorage.getItem('token');
+    await axios.delete(`http://localhost:4000/expense/delete-expense/${userId}`,{headers : {'Authorization':token}})
     .then((response)=>{
       removeItemFromScreen(userId);
-      location .reload();
+      //location .reload();
 
     })
     .catch((err)=>{

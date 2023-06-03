@@ -8,8 +8,11 @@ async function submitEvent(e){
             email,password
         }
         const check=await axios.post('http://localhost:4000/user/login',obj)
-       .then(reponse=>{
-        alert('user logged in successfulley');
+       .then(response=>{
+        console.log(response.data.token);
+        alert(response.data.message);
+        localStorage.setItem('token',response.data.token);
+        window.location.href='http://localhost:4000/expense/add-expense'
        })
     }
     catch(err){

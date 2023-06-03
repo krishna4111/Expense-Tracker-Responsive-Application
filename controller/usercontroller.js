@@ -1,9 +1,10 @@
 const User=require('../model/user');
 const path=require('path');
 const bcrypt=require('bcrypt');
+const jwt=require('jsonwebtoken');
 
 exports.showPage=(req,res,next)=>{
-    res.sendFile(path.join(__dirname,'../','view','form.html'))
+    res.sendFile(path.join(__dirname,'../','view','signup.html'))
 }
 
 exports.showLogin=(req,res,next)=>{
@@ -40,6 +41,9 @@ exports.signup=async (req,res,next)=>{
    }
     
 }
+function generateAccessToken(id){
+    return jwt.sign({userId:id} , 'secretkey');
+}
 
 exports.loginCheck=async (req,res,next)=>{
     try{
@@ -54,7 +58,7 @@ exports.loginCheck=async (req,res,next)=>{
                 //the above line directly takes our code to catch block
                }
                 if(result===true){
-                    res.status(201).json({ success:true , message:'user logged in successfully' });
+                    res.status(201).json({ success:true , message:'user logged in successfully',token:generateAccessToken(check[0].id) });
                 }
                 else{
                     
