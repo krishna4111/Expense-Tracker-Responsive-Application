@@ -135,6 +135,7 @@ function showLeaderBoard(){
     var leaderboardElem=document.getElementById('leaderboard');
     leaderboardElem.innerHTML+='<h1> Leader Board</h1>'
     userLeaderBoardArray.data.forEach((userDetail)=>{
+      console.log('userDetail>>',userDetail)
       leaderboardElem.innerHTML+=`<li>Name-${userDetail.name} -- total expense-->${userDetail.total_cost}`
     })
   }
