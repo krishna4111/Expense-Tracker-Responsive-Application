@@ -2,6 +2,8 @@ const Expense = require("../model/expense");
 
 const path = require("path");
 
+const User=require('../model/user');
+
 exports.showPage = (req, res, next) => {
   res.sendFile(path.join(__dirname, "../", "view", "expense.html"));
 };
@@ -22,17 +24,21 @@ exports.addExpense = async (req, res) => {
     if (isStringValid(description) || isStringValid(category)) {
       return res.status(400).json({ success: false, message: "bad parameter" });
     }
-    console.log("login user id>>", req.user.id);
     const expense = await Expense.create({
       amount,
       description,
       category,
       userId: req.user.id,
     });
+    const oldamount=req.user.totalexpense;
+    const newamount=Number(oldamount)  + Number(amount) ;
+   await User.update({totalexpense:newamount} , {where:{id:req.user.id}});
+    
     res
       .status(201)
       .json({ success: true, message: "expense added successfully", expense });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err });
   }
 };

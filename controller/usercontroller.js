@@ -34,7 +34,7 @@ const signup = async (req, res, next) => {
     }
     const saltrounds = 10;
     bcrypt.hash(password, saltrounds, async (err, hash) => {
-      await User.create({ name, email, password: hash, ispremiumuser: false });
+      await User.create({ name, email, password: hash, ispremiumuser: false, totalexpense:0});
       res.status(201).json({ message: "successfully created new user" });
     });
   } catch (err) {

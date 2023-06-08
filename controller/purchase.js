@@ -6,6 +6,8 @@ const userController=require('./usercontroller')
 
 exports.purchasePremium = async (req, res) => {
   try {
+    console.log("id>>>>>" ,process.env.RAZORPAY_KEY_ID)
+    console.log("key>>>>>",process.env.RAZORPAY_KEY_SECRECT)
     //in here i just create an object for new razorpay
     var rzp = new Razorpay({
       //the secret things which we dont want to push into git is inside the .env files

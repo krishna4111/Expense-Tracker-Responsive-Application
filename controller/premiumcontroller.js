@@ -6,16 +6,10 @@ const sequelize=require('../util/database');
 const getLeaderBoard=async(req,res)=>{
     try{
         const leaderboardofusers=await User.findAll({
-          attributes:['id' , 'name',[sequelize.fn('sum' ,sequelize.col('expenses.amount')), 'total_cost']],
-          include:[
-            {
-              model:Expense,
-              attributes:[]
-            }
-          ],
-          group:['user.id'],
-          order:[['total_cost' , 'DESC']]
+          attributes:['name' , 'totalexpense'],
+          order:[['totalexpense','Desc']]
         });
+      
         res.status(200).json(leaderboardofusers);
     }
     catch(err){
