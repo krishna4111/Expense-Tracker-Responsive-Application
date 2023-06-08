@@ -1,11 +1,9 @@
 const Razorpay = require("razorpay");
-const path=require('path');
 
 const Order = require("../model/order");
 
-exports.show= (req,res)=>{
-  res.sendFile(path.join(__dirname, "../", "view", "premiumexpense.html"));
-}
+const userController=require('./usercontroller')
+
 exports.purchasePremium = async (req, res) => {
   try {
     //in here i just create an object for new razorpay
@@ -39,10 +37,10 @@ exports.purchasePremium = async (req, res) => {
   }
 };
 
+
 exports.updateTransaction = async (req, res) => {
   try {
-    console.log("i am here")
-    console.log("req body>>>>>" ,req.body);
+    userId=req.user.id;
     const { payment_id, order_id } = req.body;
     //const orderUpdate = await Order.findOne({ where: { orderid: order_id } });
    
@@ -53,9 +51,10 @@ exports.updateTransaction = async (req, res) => {
     const promise2 = req.user.update({ ispremiumuser: true });
     Promise.all([promise1, promise2])
       .then(() => {
-        return res.status(202).json({ success: true, message: "Transaction successful" });
+        return res.status(202).json({ success: true, message: "Transaction successful", token: userController.generateAccessToken(req.user.id,req.user.name,req.user.ispremiumuser) });
       })
       .catch((err) => {
+        console.log(err);
         throw new Error(err);
       });
   } catch (err) {
@@ -65,3 +64,4 @@ exports.updateTransaction = async (req, res) => {
       .json({ message: "cause some error in update transactions" });
   }
 };
+

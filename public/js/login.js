@@ -9,17 +9,10 @@ async function submitEvent(e){
         }
         const check=await axios.post('http://localhost:4000/user/login',obj)
        .then(response=>{
-        console.log(response.data)
+        console.log(response.data.token);
         alert(response.data.message);
         localStorage.setItem('token',response.data.token);
-        if(response.data.ispremiumuser==true){
-            window.location.href='http://localhost:4000/expense/premiumexpense'
-        }
-       
-        else{
-            window.location.href='http://localhost:4000/expense/add-expense'
-        }
-        
+        window.location.href='http://localhost:4000/expense/add-expense'
        })
     }
     catch(err){

@@ -10,6 +10,7 @@ const purchaseRoute = require("./routes/purchase");
 const dotenv = require("dotenv");
 const app = express();
 const Order = require("./model/order");
+const premiumRouter=require('./routes/premium');
 
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
@@ -22,7 +23,8 @@ dotenv.config();
 
 app.use("/user", userRoute);
 app.use("/expense", expenseRoute);
-app.use("/expense", purchaseRoute);
+app.use("/premium", purchaseRoute);
+app.use('/premium',premiumRouter)
 
 app.use(express.static(path.join(__dirname, "public")));
 

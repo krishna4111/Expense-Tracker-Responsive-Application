@@ -3,11 +3,11 @@ const path = require("path");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-exports.showPage = (req, res, next) => {
+const showPage = (req, res, next) => {
   res.sendFile(path.join(__dirname, "../", "view", "signup.html"));
 };
 
-exports.showLogin = (req, res, next) => {
+const showLogin = (req, res, next) => {
   res.sendFile(path.join(__dirname, "../", "view", "login.html"));
 };
 function isStringValid(string) {
@@ -17,7 +17,7 @@ function isStringValid(string) {
     return false;
   }
 }
-exports.signup = async (req, res, next) => {
+const signup = async (req, res, next) => {
   try {
     //using destructor here
     const { name, email, password } = req.body;
@@ -43,16 +43,17 @@ exports.signup = async (req, res, next) => {
     });
   }
 };
-function generateAccessToken(id) {
-  return jwt.sign({ userId: id }, "secretkey");
+function generateAccessToken(id , name , ispremiumuser) {
+  return jwt.sign({ userId: id,name,ispremiumuser}, "secretkey");
 }
 
-exports.loginCheck = async (req, res, next) => {
+const loginCheck = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const check = await User.findAll({ where: { email } });
     if (check.length >= 1) {
       bcrypt.compare(password, check[0].password, (err, result) => {
+        
         if (err) {
           //   res.status(500).json({success:false , message:'something went wrong'})
           //instead sending error we can through error
@@ -60,14 +61,7 @@ exports.loginCheck = async (req, res, next) => {
           //the above line directly takes our code to catch block
         }
         if (result === true) {
-          res
-            .status(201)
-            .json({
-              success: true,
-              message: "user logged in successfully",
-              token: generateAccessToken(check[0].id),
-              ispremiumuser:check[0].ispremiumuser
-            });
+          res.status(201).json({ success: true, message: "user logged in successfully", token: generateAccessToken(check[0].id , check[0].name , check[0].ispremiumuser) });
         } else {
           return res
             .status(400)
@@ -85,3 +79,11 @@ exports.loginCheck = async (req, res, next) => {
     res.status(500).json({ message: err, success: false });
   }
 };
+
+module.exports={
+  showPage,
+  showLogin,
+  signup,
+  generateAccessToken,
+  loginCheck
+}

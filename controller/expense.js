@@ -14,7 +14,7 @@ function isStringValid(string) {
   }
 }
 
-exports.addExpense = async (req, res, next) => {
+exports.addExpense = async (req, res) => {
   try {
     const { amount, description, category } = req.body;
     console.log(amount, description, category);
@@ -37,19 +37,17 @@ exports.addExpense = async (req, res, next) => {
   }
 };
 
-exports.fetchAll = async (req, res, next) => {
+exports.fetchAll = async (req, res) => {
   try {
-    const ans = await Expense.findAll({ where: { userId: req.user.id } }).then(
-      (expenses) => {
-        return res.status(201).json({ success: true, expenses });
-      }
-    );
-  } catch (err) {
+    const ans = await Expense.findAll({ where: { userId: req.user.id } })
+        return res.status(201).json({ success: true, ans });
+  }
+   catch (err) {
     return res.status(500).json({ success: false, error: err });
   }
 };
 
-exports.deleteExpense = async (req, res, next) => {
+exports.deleteExpense = async (req, res) => {
   try {
     const expenseId = req.params.id;
     await Expense.destroy({ where: { id: expenseId, userId: req.user.id } })
