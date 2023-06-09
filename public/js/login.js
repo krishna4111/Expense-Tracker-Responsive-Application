@@ -21,3 +21,7 @@ async function submitEvent(e){
     }
     
 }
+
+function forgotpassword(){
+    window.location.href="http://localhost:4000/password/forgotpassword"
+}

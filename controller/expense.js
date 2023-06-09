@@ -19,8 +19,9 @@ function isStringValid(string) {
 }
 
 exports.addExpense = async (req, res) => {
+  const t=await sequelize.transaction();
   try {
-    var t=await sequelize.transaction();
+    
     const { amount, description, category } = req.body;
    // console.log(amount, description, category);
 
@@ -56,8 +57,9 @@ exports.fetchAll = async (req, res) => {
 };
 
 exports.deleteExpense = async (req, res) => {
+  const t=await sequelize.transaction();
   try {
-    var t=await sequelize.transaction();
+    
     const expenseId = req.params.id;
 
     const expense=await Expense.findByPk(expenseId);
