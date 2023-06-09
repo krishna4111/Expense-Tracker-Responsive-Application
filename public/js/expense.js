@@ -4,20 +4,20 @@ async function addFunction(e) {
     const amount = e.target.amount.value;
     const description = e.target.description.value;
     const category = e.target.category.value;
-    console.log(amount, description, category);
+    //console.log(amount, description, category);
     obj = {
       amount,
       description,
       category,
     };
     const token = localStorage.getItem("token");
-    console.log(token);
+    //console.log(token);
     await axios
       .post("http://localhost:4000/expense/add-expense", obj, {
         headers: { 'Authorization': token },
       })
       .then((response) => {
-        console.log("very very>>", response.data);
+       // console.log("very very>>", response.data);
         showExpences(response.data.expense);
        // location.reload();
       });
@@ -114,7 +114,7 @@ document.getElementById("rzp-button1").onclick = async function (e) {
 }
 
 function showLeaderBoard(){
-  console.log('i am inside')
+ //s console.log('i am inside')
   const inputElement= document.createElement('input');
   inputElement.type="button";
   inputElement.value="showLeaderBoard"
@@ -135,7 +135,7 @@ function showLeaderBoard(){
     var leaderboardElem=document.getElementById('leaderboard');
     leaderboardElem.innerHTML+='<h1> Leader Board</h1>'
     userLeaderBoardArray.data.forEach((userDetail)=>{
-      console.log('userDetail>>',userDetail)
+      //console.log('userDetail>>',userDetail)
       leaderboardElem.innerHTML+=`<li>Name-${userDetail.name} -- total expense-->${userDetail.totalexpense}`
     })
   }

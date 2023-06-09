@@ -42,7 +42,7 @@ exports.purchasePremium = async (req, res) => {
 
 exports.updateTransaction = async (req, res) => {
   try {
-    userId=req.user.id;
+    console.log(req);
     const { payment_id, order_id } = req.body;
     //const orderUpdate = await Order.findOne({ where: { orderid: order_id } });
    

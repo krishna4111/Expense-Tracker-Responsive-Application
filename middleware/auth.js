@@ -8,11 +8,11 @@ exports.authentication = async (req, res, next) => {
 
     const user = jwt.verify(token, "secretkey");
     // console.log(user.userId);
-    User.findByPk(user.userId).then((user) => {
-      req.user = user;
+  const userDetail=await  User.findByPk(user.userId);
+      req.user = userDetail;
       next();
-    });
-  } catch (err) {
+  } 
+  catch (err) {
     console.log(err);
     return res.status(500).json({ success: false });
   }

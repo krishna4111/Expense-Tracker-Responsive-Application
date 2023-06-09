@@ -9,6 +9,6 @@ router.post('/add-expense',Middleware.authentication,Expense.addExpense)
 
 router.get('/show-all', Middleware.authentication ,Expense.fetchAll);
 
-router.delete('/delete-expense/:id', Middleware.authentication ,Expense.deleteExpense)
+router.delete('/delete-expense/:id',Middleware.authentication, Middleware.authentication ,Expense.deleteExpense)
 
 module.exports=router;
