@@ -2,12 +2,13 @@ async function submitEvent(e){
     try{
         e.preventDefault();
         const email=e.target.email.value;
+        console.log(email)
         const obj={
           email
         }
         
       const send=  await axios.post('http://localhost:4000/password/forgotpassword',obj);
-      if(send.status===202){
+      if(send.status===201){
         document.body.innerHTML += '<div style="color:red;">Mail Successfuly sent <div>'
       }
       else{

@@ -11,6 +11,7 @@ const dotenv = require("dotenv");
 const app = express();
 const Order = require("./model/order");
 const premiumRouter=require('./routes/premium');
+const ForgotPasswordRouter=require('./routes/forgotpassword');
 
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
@@ -25,6 +26,7 @@ app.use("/user", userRoute);
 app.use("/expense", expenseRoute);
 app.use("/premium", purchaseRoute);
 app.use('/premium',premiumRouter)
+app.use('/password',ForgotPasswordRouter)
 
 app.use(express.static(path.join(__dirname, "public")));
 
