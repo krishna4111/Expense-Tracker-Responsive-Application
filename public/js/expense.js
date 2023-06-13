@@ -47,6 +47,7 @@ addEventListener("DOMContentLoaded", async () => {
     if(ispremiumuser){
       showPremiumUserMessage();
       showLeaderBoard();
+      downloadExpense();
     }
     await axios
       .get("http://localhost:4000/expense/show-all", {
@@ -89,11 +90,11 @@ document.getElementById("rzp-button1").onclick = async function (e) {
         )
         .then(response=>{
           alert("you are a premium user now");
-          document.getElementById("rzp-button1").style.visibility="hidden";
-          document.getElementById("message").innerHTML=`<span style='color: gold;'>You are a Premium user now</span>`;
+          showPremiumUserMessage();
           console.log('res.data.token',response);
           localStorage.setItem('token',response.data.token);
           showLeaderBoard();
+          downloadExpense();
           
         })
       }
@@ -119,8 +120,8 @@ function showLeaderBoard(){
   inputElement.type="button";
   inputElement.value="showLeaderBoard"
   inputElement.id='leaderboard-btn'
-  inputElement.style.backgroundColor = 'brown';
-  inputElement.style.color = 'gold';
+  inputElement.style.backgroundColor = 'gold';
+  inputElement.style.color = 'black';
   inputElement.style.borderRadius = '15px';
   inputElement.style.padding = '8px';
   inputElement.style.marginLeft = '100px';
@@ -139,6 +140,29 @@ function showLeaderBoard(){
       leaderboardElem.innerHTML+=`<li>Name-${userDetail.name} -- total expense-->${userDetail.totalexpense}`
     })
   }
+}
+function downloadExpense(){
+  console.log('i am in download');
+  const inputElement= document.createElement('input');
+  inputElement.type="button";
+  inputElement.value="download-expenses"
+  inputElement.id='download-btn'
+  inputElement.style.backgroundColor = 'gold';
+  inputElement.style.color = 'black';
+  inputElement.style.borderRadius = '9px';
+  inputElement.style.padding = '8px';
+  inputElement.style.marginLeft = '100px';
+  const header=document.getElementById('main-header');
+  header.appendChild(inputElement);
+
+
+  inputElement.onclick = async(eve) => {
+    const token = localStorage.getItem('token');
+
+    const getUserDownloadedData = await axios.get('http://localhost:3000/userexpense/Download', { headers: { 'Authorization': token } });
+    console.log(getUserDownloadedData)
+}
+  
 }
 
 
