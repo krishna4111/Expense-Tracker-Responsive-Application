@@ -2,10 +2,74 @@ const User = require("../model/user");
 const path = require("path");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const AWS=require('aws-sdk');
+require('dotenv').config();
 
 const showPage = (req, res, next) => {
   res.sendFile(path.join(__dirname, "../", "view", "signup.html"));
 };
+
+
+async function updatedToS3(data,filename){
+  try{
+    //console.log(process.env.AWS_BUCKET_NAME,process.env.AWS_IAM_USER_KEY,process.env.AWS_IAM_USER_SECRET)
+    const BUCKET_NAME=process.env.AWS_BUCKET_NAME;
+    const IAM_USER_KEY=process.env.AWS_IAM_USER_KEY;
+    const IAM_USER_SECRET=process.env.AWS_IAM_USER_SECRET;
+    let s3bucket=new AWS.S3({
+      accessKeyId:IAM_USER_KEY,
+      secretAccessKey:IAM_USER_SECRET,
+      //Bucket:BUCKET_NAME
+    })
+
+      var params={
+        Bucket:BUCKET_NAME,
+        Key:filename,
+        Body:data,
+        ACL:'public-read'
+      }
+      return new Promise((resolve,reject)=>{
+        s3bucket.upload(params , (err,s3response)=>{
+          if(err){
+            //console.log("something went wrong" , err);
+            reject(err);
+          }
+          else{
+            console.log('success' , s3response);
+            resolve(s3response.Location)
+          }
+        })
+      })
+       
+  }
+  catch(err){
+    console.log(err);
+  }
+ 
+}
+
+
+const downloadExpense=async (req,res)=>{
+  try{
+    const expenses=await req.user.getExpenses();
+    console.log(expenses);
+  
+    const stringifiedExpense=JSON.stringify(expenses);
+    const userId=req.user.id;
+
+    const filename=`Expense${userId}/${new Date()}.txt`;
+    const fileURl= await updatedToS3(stringifiedExpense , filename);
+    res.status(200).json({fileURl , success:true});
+  }
+  catch(err){
+    console.log(err);
+    res.status(500).json({message :"something went wrong"});
+  }
+  
+
+}
+
+
 
 const showLogin = (req, res, next) => {
   res.sendFile(path.join(__dirname, "../", "view", "login.html"));
@@ -85,5 +149,6 @@ module.exports={
   showLogin,
   signup,
   generateAccessToken,
-  loginCheck
+  loginCheck,
+  downloadExpense
 }

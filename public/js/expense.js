@@ -159,8 +159,15 @@ function downloadExpense(){
   inputElement.onclick = async(eve) => {
     const token = localStorage.getItem('token');
 
-    const getUserDownloadedData = await axios.get('http://localhost:3000/userexpense/Download', { headers: { 'Authorization': token } });
-    console.log(getUserDownloadedData)
+    const getUserDownloadedData = await axios.get('http://localhost:4000/user/download', { headers: { 'Authorization': token } });
+    if(getUserDownloadedData.status===200){
+      var a=document.createElement("a");
+      a.href=getUserDownloadedData.data.fileURl;
+      a.click();
+    }
+    else{
+      throw new Error(document.data.message);
+    }
 }
   
 }
