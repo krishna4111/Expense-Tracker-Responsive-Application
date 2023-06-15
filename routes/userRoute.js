@@ -8,5 +8,6 @@ router.post('/signup',User.signup);
 router.get('/download',middleWare.authentication,User.downloadExpense);
 router.get('/login',User.showLogin)
 router.post('/login',User.loginCheck)
+router.get('/show-downloadLink',middleWare.authentication,User.downloadLinks)
 
 module.exports=router;

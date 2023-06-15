@@ -13,6 +13,7 @@ const Order = require("./model/order");
 const premiumRouter=require('./routes/premium');
 const ForgotPasswordRouter=require('./routes/forgotpassword');
 const ForgotPassword=require('./model/forgotpassword');
+const FilesDownloaded=require('./model/filesdoenloaded');
 
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
@@ -39,6 +40,9 @@ Order.belongsTo(User);
 
 User.hasMany(ForgotPassword);
 ForgotPassword.belongsTo(User);
+
+User.hasMany(FilesDownloaded);
+FilesDownloaded.belongsTo(User);
 
 sequelize
   //.sync({ force: true })

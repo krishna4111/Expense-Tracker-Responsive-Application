@@ -48,6 +48,7 @@ addEventListener("DOMContentLoaded", async () => {
       showPremiumUserMessage();
       showLeaderBoard();
       downloadExpense();
+      showDownloadLinks();
     }
     await axios
       .get("http://localhost:4000/expense/show-all", {
@@ -95,6 +96,7 @@ document.getElementById("rzp-button1").onclick = async function (e) {
           localStorage.setItem('token',response.data.token);
           showLeaderBoard();
           downloadExpense();
+          showDownloadLinks();
           
         })
       }
@@ -113,7 +115,50 @@ document.getElementById("rzp-button1").onclick = async function (e) {
   }
 
 }
+function showDownloadLinks(){
+  const inputElement= document.createElement('input');
+  inputElement.type="button";
+  inputElement.value="Show Download File Link"
+  inputElement.id='downloadfile-btn'
+  inputElement.style.backgroundColor = 'gold';
+  inputElement.style.color = 'black';
+  inputElement.style.borderRadius = '15px';
+  inputElement.style.padding = '8px';
+  inputElement.style.marginLeft = '100px';
+  const header=document.getElementById('main-header');
+  header.appendChild(inputElement);
 
+
+
+  inputElement.onclick=async()=>{
+    const heading=document.getElementById('heading');
+    heading.innerText="Show Download Url"
+    const downloadUrl=document.getElementById('downloadlinks');
+    const token=localStorage.getItem('token');
+  
+    const downloadLinks=await axios.get( "http://localhost:4000/user/show-downloadLink",{ headers:{'Authorization':token}})
+console.log('downloadLinks' ,downloadLinks)
+if(downloadLinks.data.url==[] || downloadLinks.data.url==''){
+  const li = document.createElement('li');
+  li.innerText = "No Downloaded Url";
+  downloadUrl.append(li)
+}
+else{
+  downloadLinks.data.url.forEach((Element) => {
+    console.log('Element.filelink',Element)
+    const li = document.createElement('li');
+    const a=document.createElement('a');
+    a.href=`${Element.filelink}`;
+    a.innerHTML=` Url:  ${Element.filelink} `; 
+    li.appendChild(a);
+    downloadUrl.appendChild(li);
+})
+}
+
+   
+
+}
+}
 function showLeaderBoard(){
  //s console.log('i am inside')
   const inputElement= document.createElement('input');
@@ -164,6 +209,7 @@ function downloadExpense(){
       var a=document.createElement("a");
       a.href=getUserDownloadedData.data.fileURl;
       a.click();
+      const parentNode = document.getElementById("showing");
     }
     else{
       throw new Error(document.data.message);
