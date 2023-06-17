@@ -25,10 +25,14 @@ async function addFunction(e) {
     console.log(err);
   }
 }
+
+//below function is for after a user buys premium the buypremium button hides
 function showPremiumUserMessage(){
   document.getElementById("rzp-button1").style.visibility="hidden";
   document.getElementById("message").innerHTML=`<span style='color: gold;'>You are a Premium user now</span>`;
 }
+
+//this method is for decoding our token in frontend
 function parseJwt (token) {
   var base64Url = token.split('.')[1];
   var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -38,11 +42,12 @@ function parseJwt (token) {
 
   return JSON.parse(jsonPayload);
 }
+
+//below method is for each and every time reload the page
 addEventListener("DOMContentLoaded", async () => {
   try {
     const token = localStorage.getItem("token");
     const decodeToken=parseJwt(token);
-    console.log(decodeToken);
     const ispremiumuser=decodeToken.ispremiumuser;
     if(ispremiumuser){
       showPremiumUserMessage();
@@ -50,21 +55,73 @@ addEventListener("DOMContentLoaded", async () => {
       downloadExpense();
       showDownloadLinks();
     }
-    await axios
-      .get("http://localhost:4000/expense/show-all", {
-        headers: { 'Authorization': token },
-      })
-      .then((response) => {
-        response.data.ans.forEach((expenses) => {
-          showExpences(expenses);
-        });
-      });
+    page=1;
+    const getdata=await axios.get(`http://localhost:4000/expense/pagination?page=${page}` , {headers : {'Authorization':token }});
+    console.log(getdata.data.allExpenses)
+    getdata.data.allExpenses.forEach(ele=>{
+      showExpences(ele);
+    })
+    console.log(getdata.data)
+    showPagination(getdata.data);
+    
+    // await axios
+    //   .get("http://localhost:4000/expense/show-all", {
+    //     headers: { 'Authorization': token },
+    //   })
+    //   .then((response) => {
+    //     response.data.ans.forEach((expenses) => {
+    //       showExpences(expenses);
+    //     });
+    //   });
   } catch (error) {
     console.log(error);
   }
 });
 
+function showPagination({currentPage,hasNextPage,nextPage,hasPreviousPage,previousPage}){
 
+  const pagination=document.getElementById('pagination');
+
+  if(hasPreviousPage){
+    const prevBtn=document.createElement('button');
+    prevBtn.innerHTML=previousPage;
+    prevBtn.addEventListener('click' , ()=>{
+      getProducts(previousPage);
+    })
+    pagination.appendChild(prevBtn);
+   }
+
+  const crtBtn=document.createElement('button');
+  crtBtn.innerHTML=currentPage;
+  crtBtn.addEventListener('click',()=>{
+    getProducts(currentPage)
+  })
+  pagination.appendChild(crtBtn);
+
+
+
+   if(hasNextPage){
+    const nextBtn=document.createElement('button');
+    nextBtn.innerHTML=nextPage;
+    nextBtn.addEventListener('click',()=>{
+      getProducts(nextPage);
+    })
+    pagination.appendChild(nextBtn);
+   }
+}
+
+async function getProducts(page){
+  const token=localStorage.getItem('token');
+  const getdata=await axios.get(`http://localhost:4000/expense/pagination?page=${page}` , {headers : {'Authorization':token }});
+  console.log(getdata.data.allExpenses)
+  getdata.data.allExpenses.forEach(ele=>{
+    showExpences(ele);
+  })
+  console.log('data')
+  showPagination(getdata.data);
+}
+
+//this method is for buy premium
 document.getElementById("rzp-button1").onclick = async function (e) {
   try{
     e.preventDefault();
@@ -115,6 +172,9 @@ document.getElementById("rzp-button1").onclick = async function (e) {
   }
 
 }
+
+
+//below method is for showing the download expenses as links
 function showDownloadLinks(){
   const inputElement= document.createElement('input');
   inputElement.type="button";
@@ -159,6 +219,8 @@ else{
 
 }
 }
+
+//this method is for showing the leaderboard for premium user
 function showLeaderBoard(){
  //s console.log('i am inside')
   const inputElement= document.createElement('input');
@@ -186,6 +248,9 @@ function showLeaderBoard(){
     })
   }
 }
+
+
+//this method is for directly download the expenses when you click on download expenses button
 function downloadExpense(){
   console.log('i am in download');
   const inputElement= document.createElement('input');
@@ -218,7 +283,7 @@ function downloadExpense(){
   
 }
 
-
+//this is for normally showing the expenses 
 function showExpences(obj) {
   const parentNode = document.getElementById("showing");
   const createNewUser = `<li id=${obj.id}> ${obj.amount} - ${obj.description} - ${obj.category} 
@@ -250,7 +315,7 @@ function showExpences(obj) {
 // }
 
 
-
+//this is for deleting the expenses
 async function deleteExpense(userId) {
   console.log("inside delete");
   const token = localStorage.getItem("token");
@@ -271,3 +336,4 @@ function removeItemFromScreen(UserId) {
   const elem = document.getElementById(UserId);
   parentNode.removeChild(elem);
 }
+
