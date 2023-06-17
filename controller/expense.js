@@ -111,7 +111,8 @@ exports.paginateData = async(req,res)=>{
     //a falsy value (such as null, undefined, 0, or an empty string), then page will be assigned the value 1 as the default.
     page=+req.query.page || 1;
     const pageSize=+req.query.pageSize || 5;
-    console.log(pageSize);
+    console.log('pagesize>>>',req.query);
+    console.log('pagesize',pageSize);
     totalExpenses=await countExpenses(req);
     const getData=await Expense.findAll({
       where:{userId:req.user.id},

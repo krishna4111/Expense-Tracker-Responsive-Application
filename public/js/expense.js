@@ -47,6 +47,7 @@ function parseJwt (token) {
 addEventListener("DOMContentLoaded", async () => {
   try {
     const token = localStorage.getItem("token");
+    const pageSize=localStorage.getItem("pagesize");
     const decodeToken=parseJwt(token);
     const ispremiumuser=decodeToken.ispremiumuser;
     if(ispremiumuser){
@@ -56,7 +57,7 @@ addEventListener("DOMContentLoaded", async () => {
       showDownloadLinks();
     }
     page=1;
-    const getdata=await axios.get(`http://localhost:4000/expense/pagination?page=${page}` , {headers : {'Authorization':token }});
+    const getdata=await axios.get(`http://localhost:4000/expense/pagination?page=${page}&pageSize=${pageSize}` , {headers : {'Authorization':token }});
     console.log(getdata.data.allExpenses);
     getdata.data.allExpenses.forEach(ele=>{
       showExpences(ele);
@@ -86,7 +87,7 @@ function showPagination({currentPage,hasNextPage,nextPage,hasPreviousPage,previo
       const pageSize=document.getElementById('dynamicpagination').value;
       console.log(pageSize);
       localStorage.setItem('pagesize' ,pageSize);
-      getProducts();
+      getProducts(currentPage);
       //const pageSize=document.getElementById('dynamicpagination').value;
      // const getdata=await axios.get(`http://localhost:4000/expense/pagination?page=${page}&${pageSize}` , {headers : {'Authorization':token }});
     })
@@ -126,9 +127,9 @@ function showPagination({currentPage,hasNextPage,nextPage,hasPreviousPage,previo
 }
 
 async function getProducts(page){
-  const pageSize=localStorage.getItem('pageSize');
+  const pageSize=localStorage.getItem('pagesize');
   const token=localStorage.getItem('token');
-  const getdata=await axios.get(`http://localhost:4000/expense/pagination?page=${page}&${pageSize}` , {headers : {'Authorization':token }});
+  const getdata=await axios.get(`http://localhost:4000/expense/pagination?page=${page}&pageSize=${pageSize}` , {headers : {'Authorization':token }});
   const ul=document.getElementById('showing');
   ul.innerHTML="";
   const pagination=document.getElementById('pagination');
