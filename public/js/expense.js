@@ -57,11 +57,11 @@ addEventListener("DOMContentLoaded", async () => {
     }
     page=1;
     const getdata=await axios.get(`http://localhost:4000/expense/pagination?page=${page}` , {headers : {'Authorization':token }});
-    console.log(getdata.data.allExpenses)
+    console.log(getdata.data.allExpenses);
     getdata.data.allExpenses.forEach(ele=>{
       showExpences(ele);
-    })
-    console.log(getdata.data)
+    });
+    console.log(getdata.data);
     showPagination(getdata.data);
     
     // await axios
@@ -80,22 +80,37 @@ addEventListener("DOMContentLoaded", async () => {
 
 function showPagination({currentPage,hasNextPage,nextPage,hasPreviousPage,previousPage}){
 
+  const dynamicpagination=document.getElementById('dynamicpagination');
+  if(dynamicpagination){
+    dynamicpagination.addEventListener('change',()=>{
+      const pageSize=document.getElementById('dynamicpagination').value;
+      console.log(pageSize);
+      localStorage.setItem('pagesize' ,pageSize);
+      getProducts();
+      //const pageSize=document.getElementById('dynamicpagination').value;
+     // const getdata=await axios.get(`http://localhost:4000/expense/pagination?page=${page}&${pageSize}` , {headers : {'Authorization':token }});
+    })
+  }
+
+
+
   const pagination=document.getElementById('pagination');
 
   if(hasPreviousPage){
     const prevBtn=document.createElement('button');
     prevBtn.innerHTML=previousPage;
     prevBtn.addEventListener('click' , ()=>{
+
       getProducts(previousPage);
-    })
+    });
     pagination.appendChild(prevBtn);
    }
 
   const crtBtn=document.createElement('button');
   crtBtn.innerHTML=currentPage;
   crtBtn.addEventListener('click',()=>{
-    getProducts(currentPage)
-  })
+    getProducts(currentPage);
+  });
   pagination.appendChild(crtBtn);
 
 
@@ -105,21 +120,28 @@ function showPagination({currentPage,hasNextPage,nextPage,hasPreviousPage,previo
     nextBtn.innerHTML=nextPage;
     nextBtn.addEventListener('click',()=>{
       getProducts(nextPage);
-    })
+    });
     pagination.appendChild(nextBtn);
    }
 }
 
 async function getProducts(page){
+  const pageSize=localStorage.getItem('pageSize');
   const token=localStorage.getItem('token');
-  const getdata=await axios.get(`http://localhost:4000/expense/pagination?page=${page}` , {headers : {'Authorization':token }});
-  console.log(getdata.data.allExpenses)
+  const getdata=await axios.get(`http://localhost:4000/expense/pagination?page=${page}&${pageSize}` , {headers : {'Authorization':token }});
+  const ul=document.getElementById('showing');
+  ul.innerHTML="";
+  const pagination=document.getElementById('pagination');
+  pagination.innerHTML='';
+  console.log(getdata.data.allExpenses);
   getdata.data.allExpenses.forEach(ele=>{
     showExpences(ele);
-  })
-  console.log('data')
+  });
+  console.log('data');
   showPagination(getdata.data);
 }
+
+
 
 //this method is for buy premium
 document.getElementById("rzp-button1").onclick = async function (e) {
@@ -129,7 +151,7 @@ document.getElementById("rzp-button1").onclick = async function (e) {
     const response = await axios.get(
       "http://localhost:4000/premium/purchase-premium",
       { headers: { 'Authorization': token } }
-    )
+    );
     //console.log(response);
     var options = {
       //this key_id is very impotant bcz of this only our razorpay knows which company trys to place an order
@@ -155,31 +177,31 @@ document.getElementById("rzp-button1").onclick = async function (e) {
           downloadExpense();
           showDownloadLinks();
           
-        })
+        });
       }
-    }
+    };
     
     const rzp1 = new Razorpay(options);
     rzp1.open(); //it opens the payment screen
   
     rzp1.on("payment.failed", function (response) {
       alert("something went wrong");
-    })
+    });
   }
   catch(err){
     console.log(err);
     throw new Error(err);
   }
 
-}
+};
 
 
 //below method is for showing the download expenses as links
 function showDownloadLinks(){
   const inputElement= document.createElement('input');
   inputElement.type="button";
-  inputElement.value="Show Download File Link"
-  inputElement.id='downloadfile-btn'
+  inputElement.value="Show Download File Link";
+  inputElement.id='downloadfile-btn';
   inputElement.style.backgroundColor = 'gold';
   inputElement.style.color = 'black';
   inputElement.style.borderRadius = '15px';
@@ -192,32 +214,32 @@ function showDownloadLinks(){
 
   inputElement.onclick=async()=>{
     const heading=document.getElementById('heading');
-    heading.innerText="Show Download Url"
+    heading.innerText="Show Download Url";
     const downloadUrl=document.getElementById('downloadlinks');
     const token=localStorage.getItem('token');
   
-    const downloadLinks=await axios.get( "http://localhost:4000/user/show-downloadLink",{ headers:{'Authorization':token}})
-console.log('downloadLinks' ,downloadLinks)
+    const downloadLinks=await axios.get( "http://localhost:4000/user/show-downloadLink",{ headers:{'Authorization':token}});
+console.log('downloadLinks' ,downloadLinks);
 if(downloadLinks.data.url==[] || downloadLinks.data.url==''){
   const li = document.createElement('li');
   li.innerText = "No Downloaded Url";
-  downloadUrl.append(li)
+  downloadUrl.append(li);
 }
 else{
   downloadLinks.data.url.forEach((Element) => {
-    console.log('Element.filelink',Element)
+    console.log('Element.filelink',Element);
     const li = document.createElement('li');
     const a=document.createElement('a');
     a.href=`${Element.filelink}`;
     a.innerHTML=` Url:  ${Element.filelink} `; 
     li.appendChild(a);
     downloadUrl.appendChild(li);
-})
+});
 }
 
    
 
-}
+};
 }
 
 //this method is for showing the leaderboard for premium user
@@ -225,8 +247,8 @@ function showLeaderBoard(){
  //s console.log('i am inside')
   const inputElement= document.createElement('input');
   inputElement.type="button";
-  inputElement.value="showLeaderBoard"
-  inputElement.id='leaderboard-btn'
+  inputElement.value="showLeaderBoard";
+  inputElement.id='leaderboard-btn';
   inputElement.style.backgroundColor = 'gold';
   inputElement.style.color = 'black';
   inputElement.style.borderRadius = '15px';
@@ -239,14 +261,14 @@ function showLeaderBoard(){
   inputElement.onclick=async()=>{
     const token=localStorage.getItem('token');
   
-    const userLeaderBoardArray=await axios.get( "http://localhost:4000/premium/show-leaderboard",{ headers:{'Authorization':token}})
+    const userLeaderBoardArray=await axios.get( "http://localhost:4000/premium/show-leaderboard",{ headers:{'Authorization':token}});
     var leaderboardElem=document.getElementById('leaderboard');
-    leaderboardElem.innerHTML+='<h1> Leader Board</h1>'
+    leaderboardElem.innerHTML+='<h1> Leader Board</h1>';
     userLeaderBoardArray.data.forEach((userDetail)=>{
       //console.log('userDetail>>',userDetail)
-      leaderboardElem.innerHTML+=`<li>Name-${userDetail.name} -- total expense-->${userDetail.totalexpense}`
-    })
-  }
+      leaderboardElem.innerHTML+=`<li>Name-${userDetail.name} -- total expense-->${userDetail.totalexpense}`;
+    });
+  };
 }
 
 
@@ -255,8 +277,8 @@ function downloadExpense(){
   console.log('i am in download');
   const inputElement= document.createElement('input');
   inputElement.type="button";
-  inputElement.value="download-expenses"
-  inputElement.id='download-btn'
+  inputElement.value="download-expenses";
+  inputElement.id='download-btn';
   inputElement.style.backgroundColor = 'gold';
   inputElement.style.color = 'black';
   inputElement.style.borderRadius = '9px';
@@ -279,7 +301,7 @@ function downloadExpense(){
     else{
       throw new Error(document.data.message);
     }
-}
+};
   
 }
 
